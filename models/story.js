@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      stories.belongsTo(models.space, { foreignKey: 'spaceId' });
+      story.belongsTo(models.space, { foreignKey: 'spaceId' });
       // define association here
     }
   };
