@@ -24,7 +24,6 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const spaceId = req.params.id;
-    console.log("spaceId", spaceId);
     const specificSpaceWithStories = await Space.findByPk(spaceId, {
       include: Story,
     });
