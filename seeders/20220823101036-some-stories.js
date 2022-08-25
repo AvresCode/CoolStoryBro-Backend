@@ -43,7 +43,7 @@ module.exports = {
           name: "Fifth story",
           content: "This is the Fifth story",
           imageUrl: "https://images.unsplash.com/photo-1660753336510-7a6658e1652e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80",
-          spaceId: 2 ,
+          spaceId: 1 ,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
