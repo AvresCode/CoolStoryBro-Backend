@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const auth = require("../auth/middleware");
 const Space = require("../models").space;
 const Story = require("../models").story;
 const router = new Router();
@@ -30,6 +31,20 @@ router.get("/:id", async (req, res, next) => {
     res.send(specificSpaceWithStories);
   } catch (e) {
     console.log("space detail error:", e.message);
+    next(e);
+  }
+});
+//to try from the terminal if it works, try without auth 
+//http DELETE :4000/spaces/story/2
+router.delete("/story/:id", auth, async (req, res, next) => {
+  try {
+    const idToDelete = parseInt(req.params.id);
+    await Story.destroy({
+      where: { id: idToDelete },
+    });
+    res.status(200).send("Story deleted successfully");
+  } catch (e) {
+    console.log(e.message);
     next(e);
   }
 });
