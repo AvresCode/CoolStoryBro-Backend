@@ -4,6 +4,7 @@ const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
 const { SALT_ROUNDS } = require("../config/constants");
+const Space = require("../models/").space;
 
 const router = new Router();
 
@@ -46,12 +47,20 @@ router.post("/signup", async (req, res) => {
       password: bcrypt.hashSync(password, SALT_ROUNDS),
       name,
     });
+    // When a user signs up, create a new space
+    const newSpace = await Space.create({
+      title: `${name}'s space`,
+      // description: null,
+      // backgroundColor: "#ffffff",
+      // color: "#000000",
+      userId: newUser.dataValues.id,
+    });
 
     delete newUser.dataValues["password"]; // don't send back the password hash
 
     const token = toJWT({ userId: newUser.id });
-
-    res.status(201).json({ token, user: newUser.dataValues });
+   // res.status(201).json({ token, user: newUser.dataValues });
+    res.status(201) .json({ token, user: { ...newUser.dataValues, space: newSpace } });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
       return res
