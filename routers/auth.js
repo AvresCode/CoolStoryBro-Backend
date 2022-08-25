@@ -5,6 +5,7 @@ const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
 const { SALT_ROUNDS } = require("../config/constants");
 const Space = require("../models/").space;
+const Story = require("../models/").story;
 
 const router = new Router();
 
@@ -18,7 +19,11 @@ router.post("/login", async (req, res, next) => {
         .send({ message: "Please provide both email and password" });
     }
 
-    const user = await User.findOne({ where: { email } });
+    //  const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: { model: Space, include: [Story] },
+    });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).send({
@@ -28,6 +33,8 @@ router.post("/login", async (req, res, next) => {
 
     delete user.dataValues["password"]; // don't send back the password hash
     const token = toJWT({ userId: user.id });
+
+    //return res.status(200).send({ token, user: user.dataValues});
     return res.status(200).send({ token, user: user.dataValues });
   } catch (error) {
     console.log(error);
@@ -59,8 +66,10 @@ router.post("/signup", async (req, res) => {
     delete newUser.dataValues["password"]; // don't send back the password hash
 
     const token = toJWT({ userId: newUser.id });
-   // res.status(201).json({ token, user: newUser.dataValues });
-    res.status(201) .json({ token, user: { ...newUser.dataValues, space: newSpace } });
+    // res.status(201).json({ token, user: newUser.dataValues });
+    res
+      .status(201)
+      .json({ token, user: { ...newUser.dataValues, space: newSpace } });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
       return res
@@ -75,10 +84,16 @@ router.post("/signup", async (req, res) => {
 // The /me endpoint can be used to:
 // - get the users email & name using only their token
 // - checking if a token is (still) valid
+
 router.get("/me", authMiddleware, async (req, res) => {
+  const id = req.user.id;
+  const user = await User.findByPk(id, {
+    include: { model: Space, include: [Story] },
+  });
   // don't send back the password hash
-  delete req.user.dataValues["password"];
-  res.status(200).send({ ...req.user.dataValues });
+   delete req.user.dataValues["password"];
+  // res.status(200).send({ ...req.user.dataValues });
+  res.status(200).send(user);
 });
 
 module.exports = router;
