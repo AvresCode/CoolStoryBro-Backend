@@ -68,8 +68,9 @@ router.post("/story", async (req, res, next) => {
 });
 
 //edit my space
+// try from the terminal without auth
 // http PATCH :4000/spaces/2 title="test2" description="trial" backgroundColor="#dbf1e6" color="#845b4a"
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", auth,  async (req, res, next) => {
   try {
     const spaceId = req.params.id;
     const space = await Space.findByPk(spaceId);
