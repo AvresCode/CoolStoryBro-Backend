@@ -54,15 +54,31 @@ router.post("/story", async (req, res, next) => {
   try {
     const { name, content, imageUrl, spaceId } = req.body;
 
-    if (!name|| !content|| !imageUrl) {
+    if (!name || !content || !imageUrl) {
       return res.status(400).send("missing information");
     } else {
       const newStory = await Story.create({ name, content, imageUrl, spaceId });
       console.log("ok");
-      res.send(newStory);
+      res.send({ newStory, message: "Story added successfully!" });
     }
   } catch (e) {
     console.log(e.message);
+    next(e);
+  }
+});
+
+//edit my space
+// http PATCH :4000/spaces/2 title="test2" description="trial" backgroundColor="#dbf1e6" color="#845b4a"
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const spaceId = req.params.id;
+    const space = await Space.findByPk(spaceId);
+    const { title, description, backgroundColor, color } = req.body;
+    await space.update({ title, description, backgroundColor, color });
+
+    return res.status(200).send({ space });
+  } catch (e) {
+    console.log("space detail error:", e.message);
     next(e);
   }
 });
