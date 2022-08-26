@@ -34,7 +34,7 @@ router.get("/:id", async (req, res, next) => {
     next(e);
   }
 });
-//to try from the terminal if it works, try without auth 
+//to try from the terminal if it works, try without auth
 //http DELETE :4000/spaces/story/2
 router.delete("/story/:id", auth, async (req, res, next) => {
   try {
@@ -43,6 +43,24 @@ router.delete("/story/:id", auth, async (req, res, next) => {
       where: { id: idToDelete },
     });
     res.status(200).send("Story deleted successfully");
+  } catch (e) {
+    console.log(e.message);
+    next(e);
+  }
+});
+
+//http POST :4000/spaces/story name="test" content='testcontent' imageUrl="httphhh" spaceId=3
+router.post("/story", async (req, res, next) => {
+  try {
+    const { name, content, imageUrl, spaceId } = req.body;
+
+    if (!name|| !content|| !imageUrl) {
+      return res.status(400).send("missing information");
+    } else {
+      const newStory = await Story.create({ name, content, imageUrl, spaceId });
+      console.log("ok");
+      res.send(newStory);
+    }
   } catch (e) {
     console.log(e.message);
     next(e);

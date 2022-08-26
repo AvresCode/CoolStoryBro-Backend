@@ -17,7 +17,7 @@ module.exports = {
           name: "Second story",
           content: "This is the second story",
           imageUrl: "https://images.unsplash.com/photo-1500259783852-0ca9ce8a64dc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-          spaceId: 2 ,
+          spaceId: 3 ,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
